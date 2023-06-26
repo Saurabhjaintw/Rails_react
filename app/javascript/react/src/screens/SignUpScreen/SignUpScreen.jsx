@@ -38,17 +38,13 @@ export const SignUpScreen = () => {
       });
 
       if (response.ok) {
-        // Registration successful
         setFlashMessage("Signup successful! Welcome aboard!");
-        // Reset form fields if needed
         // ...
       } else {
-        // Handle registration error
-        // You can display an error message or perform any other action
+        setFlashMessage("Login Failed, Invalid Credentials!");
       }
     } catch (error) {
       // Handle network or server error
-      // You can display an error message or perform any other action
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextField } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 
 export const WelcomeScreen = () => {
   const [email, setEmail] = useState("");
@@ -36,15 +36,16 @@ export const WelcomeScreen = () => {
   };
 
   return (
-    <div>
-      <h1>Welcome to the Welcome Page!</h1>
-      <p>Thank you for joining us.</p>
+    <Container maxWidth="sm">
+      <div style={{ marginTop: "32px" }}>
+        <h1>Welcome to the Referral Page!</h1>
+        <p>Thank you for joining us.</p>
 
-      <TextField label="Email Address" value={email} onChange={handleEmailChange} />
-
-      <Button variant="contained" onClick={sendReferralEmail}>
-        Send Referral Email
-      </Button>
-    </div>
-  );
-};
+        <TextField label="Email Address" value={email} onChange={handleEmailChange} fullWidth />
+        <div style={{ marginTop: "16px" }}></div>
+        <Button variant="contained" onClick={sendReferralEmail} fullWidth>
+          Send Referral Email
+        </Button>
+      </div>
+    </Container>
+  )};

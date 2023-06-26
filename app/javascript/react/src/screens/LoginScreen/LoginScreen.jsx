@@ -30,15 +30,12 @@ export const LoginScreen = () => {
       });
 
       if (response.ok) {
-        debugger
         window.location.href = "/welcome";
       } else {
         // Handle login error
-        // You can display an error message or perform any other action
       }
     } catch (error) {
       // Handle network or server error
-      // You can display an error message or perform any other action
     }
   };
 
