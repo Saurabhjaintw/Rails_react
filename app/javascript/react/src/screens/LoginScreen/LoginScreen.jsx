@@ -1,3 +1,4 @@
+// app/javascript/components/LoginScreen.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -17,8 +18,28 @@ import { Link } from "react-router-dom";
 export const LoginScreen = () => {
   const { handleSubmit, register } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("/users/sign_in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: JSON.stringify({ user: data }),
+      });
+
+      if (response.ok) {
+        debugger
+        window.location.href = "/welcome";
+      } else {
+        // Handle login error
+        // You can display an error message or perform any other action
+      }
+    } catch (error) {
+      // Handle network or server error
+      // You can display an error message or perform any other action
+    }
   };
 
   return (
@@ -123,7 +144,7 @@ export const LoginScreen = () => {
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link to="/sign-up" variant="body2">
+                    <Link to="/signup" variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>

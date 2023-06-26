@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button,
@@ -16,17 +16,45 @@ import { Link } from "react-router-dom";
 
 export const SignUpScreen = () => {
   const { handleSubmit, register } = useForm();
+  const [csrfToken, setCsrfToken] = useState("");
+  const [flashMessage, setFlashMessage] = useState("");
 
-  const onSubmit = (data) => {
-    console.log(data);
+  useEffect(() => {
+    const metaTag = document.querySelector('meta[name="csrf-token"]');
+    if (metaTag) {
+      setCsrfToken(metaTag.getAttribute("content"));
+    }
+  }, []);
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch("/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ user: data }),
+      });
+
+      if (response.ok) {
+        // Registration successful
+        setFlashMessage("Signup successful! Welcome aboard!");
+        // Reset form fields if needed
+        // ...
+      } else {
+        // Handle registration error
+        // You can display an error message or perform any other action
+      }
+    } catch (error) {
+      // Handle network or server error
+      // You can display an error message or perform any other action
+    }
   };
+
   return (
     <Container component="main" maxWidth="lg">
-      <Box
-        sx={{
-          marginTop: 8,
-        }}
-      >
+      <Box sx={{ marginTop: 8 }}>
         <Grid container component={Paper}>
           <CssBaseline />
           <Grid
@@ -59,12 +87,17 @@ export const SignUpScreen = () => {
               <Typography component="h1" variant="h5">
                 Sign Up
               </Typography>
+              {flashMessage && (
+                <div className="flash success">{flashMessage}</div>
+              )}
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit(onSubmit)}
                 sx={{ mt: 1 }}
               >
+                {/* Include the CSRF token as a hidden input */}
+                <input type="hidden" name="authenticity_token" value={csrfToken} />
                 <TextField
                   margin="normal"
                   required
@@ -73,7 +106,6 @@ export const SignUpScreen = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  autoFocus
                   {...register("email")}
                 />
 
@@ -85,13 +117,27 @@ export const SignUpScreen = () => {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   {...register("password")}
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
+
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password_confirmation"
+                  label="Confirm Password"
+                  type="password"
+                  id="password_confirmation"
+                  autoComplete="new-password"
+                  {...register("password_confirmation")}
                 />
+
+                <FormControlLabel
+                  control={<Checkbox value="agree" color="primary" />}
+                  label="I agree to the terms and conditions"
+                />
+
                 <Button
                   type="submit"
                   fullWidth
@@ -100,10 +146,11 @@ export const SignUpScreen = () => {
                 >
                   Sign Up
                 </Button>
-                <Grid container>
+
+                <Grid container justifyContent="flex-end">
                   <Grid item>
-                    <Link to="/" variant="body2">
-                      {"Already have an account? Login"}
+                    <Link to="/login" variant="body2">
+                      Already have an account? Sign in
                     </Link>
                   </Grid>
                 </Grid>
